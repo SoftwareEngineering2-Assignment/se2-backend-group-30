@@ -12,3 +12,9 @@ jobs:
         run: npm install
       - name: Run test
         run: npm test
+    env:
+      PORT: ${{ secrets.SSH_PORT }}
+      SERVER_SECRET: ${{ secrets.SERVER_SECRET }}
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+      CLONE_TOKEN: ${{ secrets.CLONE_TOKEN }}
