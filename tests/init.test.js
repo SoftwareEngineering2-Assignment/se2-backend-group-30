@@ -20,14 +20,16 @@ test.after.always((t) => {
 });
 
 test('GET /statistics returns correct response and status code', async (t) => {
-  const {body, statusCode} = await t.context.got('general/statistics');
-  t.is(body.sources, 1);
-  t.assert(body.success);
+  const { statusCode, body } = await t.context.got('general/statistics');
   t.is(statusCode, 200);
+  t.assert(body.success);
+  t.is(body.sources, 0); //do not add any sources
 });
+
 
 test('GET /sources returns correct response and status code', async (t) => {
   const token = jwtSign({id: 1});
   const {statusCode} = await t.context.got(`sources/sources?token=${token}`);
   t.is(statusCode, 200);
 });
+
