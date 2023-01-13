@@ -13,7 +13,7 @@ jobs:
       - name: Run test
         run: npm test
     env:
-      PORT: ${{ secrets.SSH_PORT }}
+      PORT: ${{ secrets.PORT }}
       SERVER_SECRET: ${{ secrets.SERVER_SECRET }}
       MONGODB_URI: ${{ secrets.MONGODB_URI }}
       SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
