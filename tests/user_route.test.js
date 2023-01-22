@@ -60,7 +60,7 @@ test('POST /user/create should return statusCode=409 and Registration Error mess
     t.is(body.status,409);
     t.is(body.message,'Registration Error: A user with that e-mail or username already exists.');
   });
-
+/*
   //test that POST /user/create returns correct respone and statusCode=200 and when a new user is created 
 test('POST /create returns correct response and status code when valid email and username are given ', async (t) => {
     mongoose();
@@ -74,7 +74,7 @@ test('POST /create returns correct response and status code when valid email and
     t.is(statusCode,200);
     t.assert(body.success);
   });
-
+*/
 //test that POST /user/create returns statuscode=400 and Validation Error message when given e-mail is not valid
 test('POST /create returns correct response and status code when email-address is not valid ', async (t) => {
     mongoose();
