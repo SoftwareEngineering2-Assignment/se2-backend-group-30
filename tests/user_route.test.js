@@ -26,7 +26,7 @@ test.after.always((t) => {
   t.context.server.close();
 });
 
-//  POST /user/create should return statusCode=409 and Registration Error message if user already exists (same email)
+//  POST /user/create should return statusCode=409 and Registration Error message if user already exists (same email) 
 test('POST /create should return correct response and status code when creating a user that already exists', async (t) => {
     mongoose();
     //Create a test user
