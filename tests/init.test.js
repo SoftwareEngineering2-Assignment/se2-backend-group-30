@@ -32,4 +32,3 @@ test('GET /sources returns correct response and status code', async (t) => {
   const {statusCode} = await t.context.got(`sources/sources?token=${token}`);
   t.is(statusCode, 200);
 });
-

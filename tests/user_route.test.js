@@ -88,3 +88,4 @@ test('POST /create returns correct response and status code when email-address i
     t.is(body.status,400);
     t.is(body.message,'Validation Error: email must be a valid email');
   });
+  
