@@ -38,3 +38,35 @@ test('GET /test-url returns correct response for incorrect URL', async (t) => {
     t.assert(!body.active); // check that the response contains 'active' property and it is false
     t.is(body.status, 500); // check that the response status code is 500 (Internal Server Error)
 });
+
+// Test that GET /general/test-url returns correct response when URL protocol is missing
+test('GET /test-url returns correct response for URL with missing protocol', async (t) => {
+    const url = "se2-frontend-30.netlify.app/";
+    const { body } = await t.context.got(`general/test-url?url=${url}`);
+    t.assert(!body.active);
+    t.is(body.status, 500);
+  });
+  
+  // Test that GET /general/test-url returns correct response when URL is empty
+  test('GET /test-url returns correct response for empty URL', async (t) => {
+    const url = "";
+    const { body } = await t.context.got(`general/test-url?url=${url}`);
+    t.assert(!body.active);
+    t.is(body.status, 500);
+  });
+  
+  // Test that GET /general/test-url returns correct response when query parameter is missing
+  test('GET /test-url returns correct response for missing query parameter', async (t) => {
+    const { body } = await t.context.got('general/test-url');
+    t.assert(!body.active);
+    t.is(body.status, 500);
+  });
+  
+  // Test that GET /general/test-url returns correct response when given an invalid URL
+  test('GET /test-url returns correct response for invalid URL', async (t) => {
+    const invalidUrl = "https://invalidurl.com/";
+    const { body } = await t.context.got(`general/test-url?url=${invalidUrl}`);
+    t.assert(!body.active);
+    t.is(body.status, 500);
+  });
+  
