@@ -2,7 +2,7 @@
 require('dotenv').config();
 const {mongoose} = require('../src/config');
 const {jwtSign} = require('../src/utilities/authentication/helpers');
-const {http,test,got,listen,app,User,Dashboard,DeleteUsersAndDashboards} = require('../src/RouteImport');
+const {http,test,got,listen,app,User,Dashboard,DeleteUsersAndDashboards} = require('../src/RouteIn');
 const sinon = require('sinon');
 
 test.before(async (t) => {
@@ -14,7 +14,7 @@ test.before(async (t) => {
 
 test.after.always((t) => {
   t.context.server.close();
-  //delete users and dashboards created for testing
+  //delete all users and dashboards that were created 
   DeleteUsersAndDashboards();
 });
 
@@ -41,11 +41,11 @@ test('GET /dashboards returns correct response and status code', async (t) => {
     mongoose();
     const token = jwtSign({id: user._id});
     //create new dashboard for user with name=Dashname
-    dashboard1 = await Dashboard({name: 'DashName',layout:[],items:{},nextId: 6,password: 'password1',shared: 0,views: 15,
+    dashboard1 = await Dashboard({name: 'NameFirst',layout:[],items:{},nextId: 6,password: '12345678',shared: 0,views: 15,
                                     owner: user._id,createdAt:'',
     }).save();
 
-    const new_name = 'DiffDashName' ;  //dashboard name different from the existing one
+    const new_name = 'NameSec' ;  //dashboard name different from the existing one
     const dashBody = {name:new_name};
     //send POST request with authenticated user's token in query and new dashboard name in body
     const {body,statusCode} = await t.context.got.post(`dashboards/create-dashboard?token=${token}`,{json:dashBody});;
