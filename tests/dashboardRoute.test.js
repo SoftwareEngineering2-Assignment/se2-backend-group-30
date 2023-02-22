@@ -57,16 +57,7 @@ test('GET /dashboards returns correct response and status code', async (t) => {
 test('POST /create-dashboard returns correct response and status code for dupl dashboard', async (t) => {
     // Set up the test by creating a dashboard with the name "Dash" using the Dashboard model
     await Dashboard.create({
-      name: 'Dash',
-      layout: [],
-      items: {},
-      nextId: 1,
-      password: '',
-      shared: 0,
-      views: 2,
-      owner: user._id,
-      createdAt: '',
-    });
+      name: 'Dash', layout: [], items: {}, nextId: 1, password: '', shared: 0, views: 2, owner: user._id, createdAt: ''});
   
     // Create a new dashboard with the same name as the existing one
     const NewDash = new Dashboard({ name: 'Dash', nextId: 2 });
