@@ -50,7 +50,7 @@ test('POST /user/create should return statusCode=409 and Registration Error mess
     //Create a test user
     user = await User({email: 'testuser@gmail.com',username: 'testuser',password: '123456',
     }).save();
-    const TestEmail =   'testuser2@gmail.com' // test user email
+    const TestEmail =   'testjima@gmail.com' // test user email
     const TestUsername = 'testuser' ; //   test user username
     const TestPassword = '012345'; //   test user password
     const TestBody={email:TestEmail , username:TestUsername , password:TestPassword} ;
@@ -64,7 +64,7 @@ test('POST /user/create should return statusCode=409 and Registration Error mess
   //test that POST /user/create returns correct respone and statusCode=200 and when a new user is created 
 test('POST /create returns correct response and status code when valid email and username are given ', async (t) => {
     mongoose();
-    const TestEmail =   'testuser2@gmail.com' // test user email
+    const TestEmail =   'testjima@gmail.com' // test user email
     const TestUsername = 'testuser' ; //   test user username
     const TestPassword = '012345'; //   test user password
     const TestBody={email:TestEmail , username:TestUsername , password:TestPassword} ;
@@ -78,7 +78,7 @@ test('POST /create returns correct response and status code when valid email and
 //test that POST /user/create returns statuscode=400 and Validation Error message when given e-mail is not valid
 test('POST /create returns correct response and status code when email-address is not valid ', async (t) => {
     mongoose();
-    const TestEmail =   'testuser2gmailcom' // test user email
+    const TestEmail =   'testjimagmailcom' // test user email
     const TestUsername = 'testuser' ; //   test user username
     const TestPassword = '012345'; //   test user password
     const TestBody={email:TestEmail , username:TestUsername , password:TestPassword} ;

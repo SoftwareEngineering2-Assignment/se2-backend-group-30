@@ -23,7 +23,7 @@ test('GET /dashboards returns correct response and status code', async (t) => {
     mongoose();
     const token = jwtSign({id: user._id});
     //Create 2 new test dashboards for the authenticated user
-    dash1 = await Dashboard({name: 'Dashboard1',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 5,owner: user._id,createdAt:'',
+    dash1 = await Dashboard({name: 'Dashboardfirst',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 5,owner: user._id,createdAt:'',
     }).save();
 
     dash2 = await Dashboard({name: 'Dashboard2',layout:[],items:{},nextId: 2,password: '',shared: 1,views: 7,owner: user._id,createdAt:'',
@@ -41,7 +41,7 @@ test('GET /dashboards returns correct response and status code', async (t) => {
     mongoose();
     const token = jwtSign({id: user._id});
     //create new dashboard for user with name=Dashname
-    dashboard1 = await Dashboard({name: 'NameFirst',layout:[],items:{},nextId: 6,password: '12345678',shared: 0,views: 15,
+    Dashboardsec = await Dashboard({name: 'NameFirst',layout:[],items:{},nextId: 6,password: '12345678',shared: 0,views: 15,
                                     owner: user._id,createdAt:'',
     }).save();
 
@@ -58,12 +58,12 @@ test('GET /dashboards returns correct response and status code', async (t) => {
  test('POST /create-dashboard returns correct response and status code for dupl dashboard', async (t) => {
     //mongoose();
     const token = jwtSign({id: user._id});
-    //Create dashboard with name=Dash1 
-    await Dashboard.create({name: 'Dash1',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 5, owner: user._id,createdAt:'',
+    //Create dashboard with name=Dash 
+    await Dashboard.create({name: 'Dash',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 5, owner: user._id,createdAt:'',
     });
 
     //create new dashboard with same name as the existing one
-    const NewDash = new Dashboard({name:'Dash1',nextId:2});
+    const NewDash = new Dashboard({name:'Dash',nextId:2});
 
     //send POST request with authenticated user's token in query and new dashboard name in body
     const {body} = await t.context.got.post(`dashboards/create-dashboard?token=${token}`,{ json :NewDash});
