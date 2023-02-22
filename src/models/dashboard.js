@@ -1,3 +1,14 @@
+// This is a JavaScript module that exports a Mongoose model for a dashboard. Here's what it does:
+
+// Imports Mongoose and the mongoose-beautiful-unique-validation plugin.
+// Defines a Mongoose schema for the dashboard, specifying its fields and their types, validators, and defaults.
+// Adds the mongoose-beautiful-unique-validation plugin to 
+// the schema to turn duplicate errors into regular Mongoose validation errors.
+// Adds a pre-save hook to the schema that hashes the 
+// password field if it has been modified and sets the createdAt 
+// field to the current date and time if the name field has been modified.
+// Defines a model method that compares hashed passwords.
+// Exports the Mongoose model for the dashboards collection.
 /* eslint-disable func-names */
 const mongoose = require('mongoose');
 const beautifyUnique = require('mongoose-beautiful-unique-validation');

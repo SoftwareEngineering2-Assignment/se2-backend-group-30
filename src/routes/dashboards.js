@@ -1,4 +1,62 @@
+// This code defines several routes for an API that manages user dashboards. 
+// The routes allow users to create, delete, clone, and retrieve dashboards, 
+// as well as view a list of dashboards owned by the user. The API uses the 
+// Express.js framework for handling HTTP requests and the Mongoose library 
+// for interacting with a MongoDB database.
+// 
+// The API includes several middleware functions that are used to handle user 
+// authentication and authorization. These functions ensure that only authenticated 
+// users are able to access certain routes and that users are only able to modify 
+// or view dashboards that they own.
+// 
+// The /dashboards route is used to retrieve a list of dashboards owned by the user. 
+// The route first checks that the user is authenticated using the authorization 
+// middleware function. It then retrieves all dashboards owned by the user using 
+// the Dashboard.find() method and formats the response data before sending it back to the client.
+// 
+// The /create-dashboard route is used to create a new dashboard owned by the user. 
+// The route first checks that the user is authenticated using the authorization 
+// middleware function. It then checks that a dashboard with the specified name does 
+// not already exist for the user using the Dashboard.findOne() method. If a dashboard 
+// with the same name already exists, the route returns an error response. Otherwise, 
+// the route creates a new dashboard using the Dashboard.save() method and sends a success 
+// response back to the client.
+// 
+// The /delete-dashboard route is used to delete a dashboard owned by the user. The route 
+// first checks that the user is authenticated using the authorization middleware 
+// function. It then attempts to find the dashboard with the specified ID and owner using 
+// the Dashboard.findOneAndRemove() method. If the dashboard is not found, the route returns 
+// an error response. Otherwise, the route deletes the dashboard and sends a success response back to the client.
+// 
+// The /dashboard route is used to retrieve a single dashboard owned by the user. The 
+// route first checks that the user is authenticated using the authorization middleware 
+// function. It then attempts to find the dashboard with the specified ID and owner using 
+// the Dashboard.findOne() method. If the dashboard is not found, the route returns an error 
+// response. Otherwise, the route formats the response data and sends it back to the client.
+// 
+// The /save-dashboard route is used to update an existing dashboard owned by the user. 
+// The route first checks that the user is authenticated using the authorization middleware 
+// function. It then attempts to update the dashboard with the specified ID and owner using 
+// the Dashboard.findOneAndUpdate() method. If the dashboard is not found, the route returns 
+// an error response. Otherwise, the route updates the dashboard and sends a success response 
+// back to the client.
+// 
+// The /clone-dashboard route is used to clone an existing dashboard owned by the user. The 
+// route first checks that the user is authenticated using the authorization middleware function. 
+// It then checks that a dashboard with the specified name does not already exist for the user 
+// using the Dashboard.findOne() method. If a dashboard with the same name already exists, the 
+// route returns an error response. Otherwise, the route clones the existing dashboard by 
+// creating a new dashboard with the same layout, items, and next ID and sends a success response back to the client.
+// 
+// The /check-password-needed route is used to determine if a password is required to view a 
+// dashboard. The route is not protected by the authorization middleware function, so it can 
+// be accessed by anyone. The route attempts to find the dashboard with the specified ID using 
+// the Dashboard.findOne() method and checks if the dashboard is shared and requires a password. 
+// If the dashboard requires a password, the route sends a response indicating that the password is 
+// required. Otherwise, the route sends a response indicating that the password is not required and 
+// includes the dashboard information.
 /* eslint-disable max-len */
+
 const express = require('express');
 const mongoose = require('mongoose');
 const {authorization} = require('../middlewares');
