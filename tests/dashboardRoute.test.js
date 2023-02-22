@@ -61,7 +61,7 @@ test('POST /create-dashboard returns correct response and status code for dupl d
   
     // Create a new dashboard with the same name as the existing one
     const NewDash = new Dashboard({ name: 'Dash', nextId: 2 });
-  
+    const token = jwtSign({id: user._id}); //Generate a JWT token for the user
     // Send a POST request to the /create-dashboard endpoint with the authenticated user's token in the query and the new dashboard's name in the body
     const { body } = await t.context.got.post(`dashboards/create-dashboard?token=${token}`, { json: NewDash });
   
