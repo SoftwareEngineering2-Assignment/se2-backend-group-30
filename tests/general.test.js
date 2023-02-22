@@ -33,7 +33,7 @@ test('GET /test-url returns correct response for correct URL', async (t) => {
 
 // Test that GET /general/test-url returns the correct response and status code when the incorrect URL is given
 test('GET /test-url returns correct response for incorrect URL', async (t) => {
-    const falseUrl = "https://30.netlify.app/";
+    const falseUrl = "https://se-30.netlify.app/";
     const { body } = await t.context.got(`general/test-url?url=${falseUrl}`);
     t.assert(!body.active); // check that the response contains 'active' property and it is false
     t.is(body.status, 500); // check that the response status code is 500 (Internal Server Error)
