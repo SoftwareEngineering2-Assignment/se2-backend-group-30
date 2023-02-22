@@ -23,7 +23,7 @@ test('GET /dashboards returns correct response and status code', async (t) => {
     mongoose(); //Connect to the database using Mongoose
     const token = jwtSign({id: user._id}); //Generate a JWT token for the user
     //Create 2 new test dashboards for the authenticated user
-    dash1 = await Dashboard({name: 'Dashboardfirst',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 5,owner: user._id,createdAt:'',
+    dash1 = await Dashboard({name: 'Dashboardfirst',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 2,owner: user._id,createdAt:'',
     }).save();
 
     dash2 = await Dashboard({name: 'Dashboard2',layout:[],items:{},nextId: 2,password: '',shared: 1,views: 7,owner: user._id,createdAt:'',
@@ -41,7 +41,7 @@ test('GET /dashboards returns correct response and status code', async (t) => {
     mongoose(); //Connect to the database using Mongoose
     const token = jwtSign({id: user._id}); //Generate a JWT token for the user
     //create new dashboard for user with name=Dashname
-    Dashboardsec = await Dashboard({name: 'NameFirst',layout:[],items:{},nextId: 6,password: '12345678',shared: 0,views: 15,
+    Dashboardsec = await Dashboard({name: 'NameFirst',layout:[],items:{},nextId: 6,password: '12345678',shared: 0,views: 10,
                                     owner: user._id,createdAt:'',
     }).save();
 
@@ -53,62 +53,82 @@ test('GET /dashboards returns correct response and status code', async (t) => {
     t.is(statusCode,200);
     t.assert(body.success);
 })
-
-//test that POST /create-dashboard successfully doesn't create new dashboard,when another dashboard with same name already exist
- test('POST /create-dashboard returns correct response and status code for dupl dashboard', async (t) => {
-    //mongoose();
-    const token = jwtSign({id: user._id});
-    //Create dashboard with name=Dash 
-    await Dashboard.create({name: 'Dash',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 5, owner: user._id,createdAt:'',
+// Test that POST /create-dashboard successfully doesn't create new dashboard, when another dashboard with the same name already exists
+test('POST /create-dashboard returns correct response and status code for dupl dashboard', async (t) => {
+    // Set up the test by creating a dashboard with the name "Dash" using the Dashboard model
+    await Dashboard.create({
+      name: 'Dash',
+      layout: [],
+      items: {},
+      nextId: 1,
+      password: '',
+      shared: 0,
+      views: 2,
+      owner: user._id,
+      createdAt: '',
     });
-
-    //create new dashboard with same name as the existing one
-    const NewDash = new Dashboard({name:'Dash',nextId:2});
-
-    //send POST request with authenticated user's token in query and new dashboard name in body
-    const {body} = await t.context.got.post(`dashboards/create-dashboard?token=${token}`,{ json :NewDash});
-    //check response
-    t.is(body.status, 409);   
-    t.is( body.message, 'A dashboard with that name already exists.');
-});
-
-//test that POST /delete-dashboard returns correct response when then given id doesn't belong to an existing dashboard
-test('POST /delete-dashboard returns correct response when selected dashboard is not found ', async (t) => {
-  mongoose();
-  const token = jwtSign({id: user._id});
   
-  const body_del= {id:0} //dashboard id not existing
-  //send POST request with authenticated user's token in query and dashboard id in body
-  const {body} = await t.context.got.post(`dashboards/delete-dashboard?token=${token}`,{ json :body_del});
-  //check response
-  t.is(body.status, 409);
-  t.is(body.message, 'The selected dashboard has not been found.');
-
-});
-
-//test that POST /delete-dashboard successfully deletes a dashboard when given a correct dashboard id
-test('POST /delete-dashboard returns correct response when selected dashboard is found and deleted', async (t) => {
-  mongoose();
-  const token = jwtSign({id: user._id});
-//Create test dashboard
- dash = await Dashboard({name: 'DashToDel',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 5,owner: user._id,createdAt:'',
-  }).save();
+    // Create a new dashboard with the same name as the existing one
+    const NewDash = new Dashboard({ name: 'Dash', nextId: 2 });
   
-  const id = {id:dash._id}; //id of dashboard created above
-  //send POST request with authenticated user's token in query and dashboard id in body
-  const {body,statusCode} = await t.context.got.post(`dashboards/delete-dashboard?token=${token}`,{ json :id});
-  //check response
-  t.is(statusCode,200);
-  t.assert(body.success);
-
-});
+    // Send a POST request to the /create-dashboard endpoint with the authenticated user's token in the query and the new dashboard's name in the body
+    const { body } = await t.context.got.post(`dashboards/create-dashboard?token=${token}`, { json: NewDash });
+  
+    // Check that the response has a status of 409 and a message indicating that a dashboard with the same name already exists
+    t.is(body.status, 409);
+    t.is(body.message, 'A dashboard with that name already exists.');
+  });
+  
+  // Test that POST /delete-dashboard returns correct response when the given id doesn't belong to an existing dashboard
+  test('POST /delete-dashboard returns correct response when selected dashboard is not found ', async (t) => {
+    // Set up the test by creating a new user token
+    const token = jwtSign({ id: user._id });
+  
+    // Set the id of the dashboard to be deleted to 0, which should not exist
+    const body_del = { id: 0 };
+  
+    // Send a POST request to the /delete-dashboard endpoint with the authenticated user's token in the query and the dashboard id in the body
+    const { body } = await t.context.got.post(`dashboards/delete-dashboard?token=${token}`, { json: body_del });
+  
+    // Check that the response has a status of 409 and a message indicating that the selected dashboard has not been found
+    t.is(body.status, 409);
+    t.is(body.message, 'The selected dashboard has not been found.');
+  });
+  
+  // Test that POST /delete-dashboard successfully deletes a dashboard when given a correct dashboard id
+  test('POST /delete-dashboard returns correct response when selected dashboard is found and deleted', async (t) => {
+    // Set up the test by creating a new user token and a dashboard to be deleted
+    const token = jwtSign({ id: user._id });
+    const dash = await Dashboard({
+      name: 'DashToDel',
+      layout: [],
+      items: {},
+      nextId: 1,
+      password: '',
+      shared: 0,
+      views: 2,
+      owner: user._id,
+      createdAt: '',
+    }).save();
+  
+    // Set the id of the dashboard to be deleted to the id of the dashboard created above
+    const id = { id: dash._id };
+  
+    // Send a POST request to the /delete-dashboard endpoint with the authenticated user's token in the query and the dashboard id in the body
+    const { body, statusCode } = await t.context.got.post(`dashboards/delete-dashboard?token=${token}`, { json: id });
+  
+    // Check that the response has a status of 200 and that the body indicates the deletion was successful
+    t.is(statusCode, 200);
+    t.assert(body.success);
+  });
+  
 
 //test that GET /dashboard returns correct response when an existing dashboard's id is given
 test('GET /dashboard returns correct response when selected dashboard exists', async (t) => {
   mongoose();
   const token = jwtSign({id: user._id});
  //Create test dashboard 
- dash = await Dashboard({name: 'DashToGet',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 15,owner: user._id,createdAt:'',
+ dash = await Dashboard({name: 'DashToGet',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 10,owner: user._id,createdAt:'',
   }).save();
 
   const id = dash._id; //id of dashboard created above
@@ -137,7 +157,7 @@ test('POST /save-dashboard returns correct response when selected dashboard exis
   mongoose();
   const token = jwtSign({id: user._id});
  //Create test dashboard    
- dash = await Dashboard({name: 'DashToSave',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 15,owner: user._id,createdAt:'',
+ dash = await Dashboard({name: 'DashToSave',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 10,owner: user._id,createdAt:'',
   }).save();
 
   const id = {id:dash._id}; //id of dashboard created above
@@ -166,7 +186,7 @@ test('POST /clone-dashboard returns correct response when dashboard clones succe
   mongoose();
   const token = jwtSign({id: user._id});
  //Create test dashboard 
- dash = await Dashboard({name: 'DashToClone',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 15,owner: user._id,createdAt:'',
+ dash = await Dashboard({name: 'DashToClone',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 10,owner: user._id,createdAt:'',
   }).save();
   //Name of clone dashboard
   const new_name='DashSuccessClone';
@@ -184,7 +204,7 @@ test('POST /clone-dashboard returns correct response when dashboard with same na
   mongoose();
   const token = jwtSign({id: user._id});
  //Creat dashboard we want to clone
- dash1 = await Dashboard({name: 'DashToClone',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 15,owner: user._id,createdAt:'',
+ dash1 = await Dashboard({name: 'DashToClone',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 10,owner: user._id,createdAt:'',
   }).save();
 
   //Create dashboard with sane name as the one ,we want the cloned dashboard to have
