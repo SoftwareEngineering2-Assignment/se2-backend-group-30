@@ -1,3 +1,14 @@
+// This is a module exporting a function that creates an email template 
+// for password reset. The template includes the platform logo, 
+// a message to reset the password, a button to redirect the user to 
+// the password reset page, and a message to ignore the email if the user did not request a password reset.
+// The function takes a token parameter, which is used to generate the 
+// password reset link. The link is constructed by concatenating the 
+// platform URI (stored in the PLATFORM_URI environment variable) and the reset token as a query parameter.
+// The email template is written in HTML and uses inline CSS styles. 
+// The styles define the layout and typography of the email.
+// The module exports a single function that returns the email template as a string.
+
 const baseUrl = process.env.PLATFORM_URI;
 const logo = `${process.env.SERVER_URI}/logo.png`;
 const link = (token) => `${baseUrl}/reset-password?token=${token}`;
