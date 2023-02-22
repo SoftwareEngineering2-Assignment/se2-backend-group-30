@@ -1,27 +1,27 @@
-/* eslint-disable import/no-unresolved */
-require('dotenv').config();
-const {mongoose} = require('../src/config');
-const {jwtSign} = require('../src/utilities/authentication/helpers');
-const {http,test,got,listen,app,User,Dashboard,DeleteUsersAndDashboards} = require('../src/RouteIn');
-const sinon = require('sinon');
+/* eslint-disable import/no-unresolved */ //Disable import errors from eslint
+require('dotenv').config(); //Load environment variables from .env file
+const {mongoose} = require('../src/config'); //Import Mongoose library and the configuration
+const {jwtSign} = require('../src/utilities/authentication/helpers'); //Import a JWT signing helper function
+const {http,test,got,listen,app,User,Dashboard,DeleteUsersAndDashboards} = require('../src/RouteIn'); //Import several modules from a custom file
+const sinon = require('sinon'); //Import a library for testing
 
 test.before(async (t) => {
-  t.context.server = http.createServer(app);
-  t.context.prefixUrl = await listen(t.context.server);
-  t.context.got = got.extend({http2: true, throwHttpErrors: false, responseType: 'json', prefixUrl: t.context.prefixUrl});
-  user = await User.create({username: 'user',password: 'password',email: 'email',});
-  });
+  t.context.server = http.createServer(app); //Create an HTTP server with the app
+  t.context.prefixUrl = await listen(t.context.server); //Set the server's URL
+  t.context.got = got.extend({http2: true, throwHttpErrors: false, responseType: 'json', prefixUrl: t.context.prefixUrl}); //Configure a "got" client to make HTTP requests
+  user = await User.create({username: 'user',password: 'password',email: 'email',}); //Create a new user for testing
+});
 
 test.after.always((t) => {
-  t.context.server.close();
+  t.context.server.close(); //Close the server after all tests have run
   //delete all users and dashboards that were created 
-  DeleteUsersAndDashboards();
+  DeleteUsersAndDashboards(); //Remove all test users and dashboards from the database
 });
 
 //test that GET /dashboards returns correct statusCode=200 and body got an authenticate user
 test('GET /dashboards returns correct response and status code', async (t) => {
-    mongoose();
-    const token = jwtSign({id: user._id});
+    mongoose(); //Connect to the database using Mongoose
+    const token = jwtSign({id: user._id}); //Generate a JWT token for the user
     //Create 2 new test dashboards for the authenticated user
     dash1 = await Dashboard({name: 'Dashboardfirst',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 5,owner: user._id,createdAt:'',
     }).save();
@@ -32,14 +32,14 @@ test('GET /dashboards returns correct response and status code', async (t) => {
     //send GET request with authenticated user's token in query
     const {body, statusCode} = await t.context.got(`dashboards/dashboards?token=${token}`);
     //check response
-    t.is(statusCode, 200);
-    t.assert(body.success);
+    t.is(statusCode, 200); //Verify that the status code is 200
+    t.assert(body.success); //Verify that the response body contains a "success" property
   });
 
 //test that POST /create-dashboard successfully creates new dashboard when user is authenticated and dashboard name doesn't already exist
  test('POST /create-dashboard returns correct response and status code', async (t) => {
-    mongoose();
-    const token = jwtSign({id: user._id});
+    mongoose(); //Connect to the database using Mongoose
+    const token = jwtSign({id: user._id}); //Generate a JWT token for the user
     //create new dashboard for user with name=Dashname
     Dashboardsec = await Dashboard({name: 'NameFirst',layout:[],items:{},nextId: 6,password: '12345678',shared: 0,views: 15,
                                     owner: user._id,createdAt:'',
