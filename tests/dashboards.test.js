@@ -31,34 +31,31 @@ test('Compare dashboard passwords',async t => {
     t.is((cmp1,cmp2),(true,false));
     Dashboard.deleteOne({});
 });
-test.beforeEach(async () => {
-    await Dashboard.deleteMany({});
-  });
-  
-  test.after.always(async () => {
-    await mongoose.connection.close();
-  });
-  
-  test.serial('Get dashboard by ID', async (t) => {
-    const dashboard = await new Dashboard({ name: 'Test Dashboard', password: 'testpassword' }).save();
-    const foundDashboard = await Dashboard.findById(dashboard._id);
-    t.is(foundDashboard.name, dashboard.name);
-    t.is(foundDashboard.password, dashboard.password);
-  });
-  
-  test.serial('Update dashboard', async (t) => {
-    const dashboard = await new Dashboard({ name: 'Test Dashboard', password: 'testpassword' }).save();
-    dashboard.name = 'Updated Dashboard';
-    dashboard.password = 'newpassword';
-    await dashboard.save();
-    const updatedDashboard = await Dashboard.findById(dashboard._id);
-    t.is(updatedDashboard.name, dashboard.name);
-    t.is(updatedDashboard.password, dashboard.password);
-  });
-  
-  test.serial('Delete dashboard', async (t) => {
-    const dashboard = await new Dashboard({ name: 'Test Dashboard', password: 'testpassword' }).save();
-    await Dashboard.findByIdAndDelete(dashboard._id);
-    const deletedDashboard = await Dashboard.findById(dashboard._id);
+
+// test that a dashboard can be retrieved by its name
+test('Retrieve dashboard by name', async t => {
+    mongoose();
+    const dashboard = await new Dashboard({name: 'jima', password: '123456789'}).save();
+    const retrievedDashboard = await Dashboard.findOne({name: 'jima'});
+    t.is(retrievedDashboard.name, dashboard.name);
+    t.is(retrievedDashboard.password, dashboard.password);
+    Dashboard.deleteOne({});
+    });
+    
+    // test that a dashboard can be updated
+    test('Update dashboard', async t => {
+    mongoose();
+    const dashboard = await new Dashboard({name: 'jima', password: '123456789'}).save();
+    const updatedDashboard = await Dashboard.findOneAndUpdate({name: 'jima'}, {password: '987654321'}, {new: true});
+    t.is(updatedDashboard.password, '987654321');
+    Dashboard.deleteOne({});
+    });
+    
+    // test that a dashboard can be deleted
+    test('Delete dashboard', async t => {
+    mongoose();
+    const dashboard = await new Dashboard({name: 'jima', password: '123456789'}).save();
+    await Dashboard.deleteOne({name: 'jima'});
+    const deletedDashboard = await Dashboard.findOne({name: 'jima'});
     t.is(deletedDashboard, null);
-  });
+    });
