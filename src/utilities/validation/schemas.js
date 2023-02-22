@@ -1,3 +1,13 @@
+// This code exports a module with a few yup validation schemas for validating data input in 
+// a user authentication system. Here is a summary of the exported schemas:
+
+// authenticate: validates the user's credentials when logging in, requires a username and password.
+// register: validates user input when creating an account, requires an email, password, and username.
+// request: validates input when requesting a password reset, requires a username.
+// change: validates input when changing the password, requires a password.
+// update: validates input when updating user information, allows updating username and password.
+// All the schemas use the yup library to define the validation rules. For example, the 
+// password schema requires that the password be at least min characters long, where min is a constant defined in a separate module.
 const {isNil} = require('ramda');
 
 const yup = require('yup');
