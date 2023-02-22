@@ -1,4 +1,31 @@
-/* eslint-disable max-len */
+// This code looks like a server-side JavaScript 
+// program that defines an Express router to handle 
+// HTTP requests related to managing "sources". A "source" 
+// seems to be some kind of external system that the server 
+// is interacting with, which has a name, type, and a variety of 
+// connection details such as URL, login credentials, and vhost.
+// 
+// The code appears to be interacting with a MongoDB database 
+// via the Mongoose library, in order to perform 
+// CRUD (Create, Read, Update, Delete) operations on "Source" objects.
+// 
+// The router has a number of different endpoints:
+// 
+// GET /sources - Retrieves all sources belonging to the authenticated user.
+// POST /create-source - Creates a new source for the authenticated user.
+// POST /change-source - Updates an existing source for the authenticated user.
+// POST /delete-source - Deletes an existing source for the authenticated user.
+// POST /source - Retrieves a specific source for a given name and owner.
+// POST /check-sources - Given a list of source names, 
+// checks which ones belong to the authenticated user, and creates any new ones.
+// Each of these endpoints uses an authorization middleware 
+// function to ensure that the user is authenticated before 
+// proceeding. The authorization function is defined 
+// in another file and imported at the top of this one.
+// 
+// There are also some error-handling code blocks using 
+// try/catch, which attempt to catch and handle errors that 
+// may arise from interacting with the database or other parts of the system.
 const express = require('express');
 const mongoose = require('mongoose');
 const {authorization} = require('../middlewares');
