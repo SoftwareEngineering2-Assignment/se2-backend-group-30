@@ -23,7 +23,7 @@ test('GET /statistics returns correct response and status code', async (t) => {
   const { statusCode, body } = await t.context.got('general/statistics');
   t.is(statusCode, 200);
   t.assert(body.success);
-  t.is(body.sources, 0); //do not add any sources
+  t.is(body.sources, 1); //do not add any sources, only 1
 });
 
 
