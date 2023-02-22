@@ -33,29 +33,52 @@ test('Compare dashboard passwords',async t => {
 });
 
 // test that a dashboard can be retrieved by its name
-test('Retrieve dashboard by name', async t => {
-    mongoose();
-    const dashboard = await new Dashboard({name: 'jima', password: '123456789'}).save();
-    const retrievedDashboard = await Dashboard.findOne({name: 'jima'});
+test('Retrieve dashboard by name', async (t) => {
+    const dashboard = {
+      name: 'jima',
+      password: '123456789'
+    };
+  
+    await Dashboard.create(dashboard);
+  
+    const retrievedDashboard = await dashboardService.retrieveDashboardByName(dashboard.name);
+  
     t.is(retrievedDashboard.name, dashboard.name);
     t.is(retrievedDashboard.password, dashboard.password);
-    Dashboard.deleteOne({});
-    });
+  
+    await Dashboard.deleteOne({});
+  });
     
     // test that a dashboard can be updated
-    test('Update dashboard', async t => {
-    mongoose();
-    const dashboard = await new Dashboard({name: 'jima', password: '123456789'}).save();
-    const updatedDashboard = await Dashboard.findOneAndUpdate({name: 'jima'}, {password: '987654321'}, {new: true});
-    t.is(updatedDashboard.password, '987654321');
-    Dashboard.deleteOne({});
-    });
+    test('Update dashboard', async (t) => {
+        const dashboard = {
+          name: 'jima',
+          password: '123456789'
+        };
+      
+        await Dashboard.create(dashboard);
+      
+        const updatedDashboard = await dashboardService.updateDashboardPassword(dashboard.name, '987654321');
+      
+        t.is(updatedDashboard.password, '987654321');
+      
+        await Dashboard.deleteOne({});
+      });
     
     // test that a dashboard can be deleted
-    test('Delete dashboard', async t => {
-    mongoose();
-    const dashboard = await new Dashboard({name: 'jima', password: '123456789'}).save();
-    await Dashboard.deleteOne({name: 'jima'});
-    const deletedDashboard = await Dashboard.findOne({name: 'jima'});
-    t.is(deletedDashboard, null);
-    });
+    test('Delete dashboard', async (t) => {
+        const dashboard = {
+          name: 'jima',
+          password: '123456789'
+        };
+      
+        await Dashboard.create(dashboard);
+      
+        await dashboardService.deleteDashboard(dashboard.name);
+      
+        const deletedDashboard = await Dashboard.findOne({ name: dashboard.name });
+      
+        t.is(deletedDashboard, null);
+      
+        await Dashboard.deleteOne({});
+      });
