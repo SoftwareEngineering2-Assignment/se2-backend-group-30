@@ -26,7 +26,7 @@ test('GET /dashboards returns correct response and status code', async (t) => {
     dash1 = await Dashboard({name: 'Dashboardfirst',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 2,owner: user._id,createdAt:'',
     }).save();
 
-    dash2 = await Dashboard({name: 'Dashboard2',layout:[],items:{},nextId: 2,password: '',shared: 1,views: 7,owner: user._id,createdAt:'',
+    dash2 = await Dashboard({name: 'dashSec',layout:[],items:{},nextId: 2,password: '',shared: 1,views: 7,owner: user._id,createdAt:'',
     }).save();
 
     //send GET request with authenticated user's token in query
@@ -100,7 +100,7 @@ test('POST /create-dashboard returns correct response and status code for dupl d
     // Set up the test by creating a new user token and a dashboard to be deleted
     const token = jwtSign({ id: user._id });
     const dash = await Dashboard({
-      name: 'DashToDel',
+      name: 'dashDelete',
       layout: [],
       items: {},
       nextId: 1,
@@ -128,7 +128,7 @@ test('GET /dashboard returns correct response when selected dashboard exists', a
   mongoose();
   const token = jwtSign({id: user._id});
  //Create test dashboard 
- dash = await Dashboard({name: 'DashToGet',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 10,owner: user._id,createdAt:'',
+ dash = await Dashboard({name: 'dashGet',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 10,owner: user._id,createdAt:'',
   }).save();
 
   const id = dash._id; //id of dashboard created above
@@ -157,7 +157,7 @@ test('POST /save-dashboard returns correct response when selected dashboard exis
   mongoose();
   const token = jwtSign({id: user._id});
  //Create test dashboard    
- dash = await Dashboard({name: 'DashToSave',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 10,owner: user._id,createdAt:'',
+ dash = await Dashboard({name: 'dashSave',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 10,owner: user._id,createdAt:'',
   }).save();
 
   const id = {id:dash._id}; //id of dashboard created above
@@ -186,10 +186,10 @@ test('POST /clone-dashboard returns correct response when dashboard clones succe
   mongoose();
   const token = jwtSign({id: user._id});
  //Create test dashboard 
- dash = await Dashboard({name: 'DashToClone',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 10,owner: user._id,createdAt:'',
+ dash = await Dashboard({name: 'dashCopy',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 10,owner: user._id,createdAt:'',
   }).save();
   //Name of clone dashboard
-  const new_name='DashSuccessClone';
+  const new_name='dashCopied';
   const DashBody = {dashboardId:dash._id, name:new_name}; //Body of new dashboard with new ,non existing name
 
  //send POST request with authenticated user's token in query and dashboard id and new_name in body
@@ -204,15 +204,15 @@ test('POST /clone-dashboard returns correct response when dashboard with same na
   mongoose();
   const token = jwtSign({id: user._id});
  //Creat dashboard we want to clone
- dash1 = await Dashboard({name: 'DashToClone',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 10,owner: user._id,createdAt:'',
+ dash1 = await Dashboard({name: 'dashCopy',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 10,owner: user._id,createdAt:'',
   }).save();
 
   //Create dashboard with sane name as the one ,we want the cloned dashboard to have
-  dash2 = await Dashboard({name: 'DashNameExisting',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 4,
+  dash2 = await Dashboard({name: 'dashExists',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 4,
                             owner: user._id,createdAt:'',
   }).save();
 
-  const DashBody = {dashboardId:dash1._id,name:'DashNameExisting'}; //Dashboard body with same name as the one created above
+  const DashBody = {dashboardId:dash1._id,name:'dashExists'}; //Dashboard body with same name as the one created above
   //send POST request with authenticated user's token in query and dashboard id and new_name in body
   const {body} = await t.context.got.post(`dashboards/clone-dashboard?token=${token}`,{json:DashBody});
   //check response
