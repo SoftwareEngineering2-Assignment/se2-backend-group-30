@@ -75,10 +75,12 @@ test('POST /create returns correct response and status code when valid email and
     t.assert(body.success);
   });
 */
-//test that POST /user/create returns statuscode=400 and Validation Error message when given e-mail is not valid
+
+//  test that POST /user/create returns statuscode=400 and Validation Error message when given e-mail is not valid
+
 test('POST /create returns correct response and status code when email-address is not valid ', async (t) => {
     mongoose();
-    const TestEmail =   'testjimagmailcom' // test user email
+    const TestEmail =   'testjimagmailco' // test user email
     const TestUsername = 'testuser' ; //   test user username
     const TestPassword = '012345'; //   test user password
     const TestBody={email:TestEmail , username:TestUsername , password:TestPassword} ;
