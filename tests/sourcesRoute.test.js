@@ -151,7 +151,7 @@ test('POST /create-source with invalid data returns 404 status code', async (t) 
     }).save();
     
     // Send a GET request to get all sources with the authentication token
-    const {body, statusCode} = await t.context.got(sources/sources?token=${token});
+    const {body, statusCode} = await t.context.got(`sources/sources?token=${token}`);
     
     // Assert that the response status is 200 and the success property is true
     t.is(statusCode, 200);
@@ -174,7 +174,7 @@ const duplName = 'sourceNew' ;
 const sourceDupl={name:duplName} ;
 
 // Send a POST request to create a new source with duplicate name using the JWT token
-const {body} = await t.context.got.post(sources/create-source?token=${token},{json:sourceDupl});
+const {body} = await t.context.got.post(`sources/create-source?token=${token}`,{json:sourceDupl});
 
 // Assert that the status code and message returned from the API are correct
 t.is(body.status,409);
