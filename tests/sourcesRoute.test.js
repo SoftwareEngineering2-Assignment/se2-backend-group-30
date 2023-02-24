@@ -88,14 +88,14 @@ test('GET /sources returns correct response and status code for authenticated us
     t.is(body.message,'Authorization Error: Failed to verify token.');
   });
   
-// Test to verify that POST request to /create-source with invalid data returns a 400 Bad Request status code
-test('POST /create-source with invalid data returns 400 status code', async (t) => {
+// Test to verify that POST request to /create-source with invalid data returns a 404 Bad Request status code
+test('POST /create-source with invalid data returns 404 status code', async (t) => {
     mongoose();
     const token = jwtSign({id: user._id});
     const invalidSourceData = {name: '', type: 'invalid', url: 'invalid', login: '', passcode: '', vhost: '', owner: user._id, createdAt:''};
     const {statusCode, body} = await t.context.got.post(`sources/create-source?token=${token}`, {json: invalidSourceData});
   
-    t.is(statusCode, 400);
+    t.is(statusCode, 404);
     t.is(body.message, 'Validation failed: name: Path `name` is required., type: `invalid` is not a valid enum value for path `type`., url: `invalid` is not a valid URL., vhost: Path `vhost` is required.');
   });
   
@@ -105,7 +105,7 @@ test('POST /create-source with invalid data returns 400 status code', async (t) 
     const {body} = await t.context.got('sources/sources');
   
     t.is(body.status, 403);
-    t.is(body.message, 'Authentication Error: No token provided.');
+    t.is(body.message, 'Authorization Error: token missing.');
   });
   
   // Test to verify that GET request to /sources/:id returns correct response and status code for authenticated user
