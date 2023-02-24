@@ -35,16 +35,23 @@ test('GET /dashboards returns correct response and status code', async (t) => {
 
 //Test to verify that POST request to /create-dashboard returns the correct response and status code
 test('POST /create-dashboard returns correct response and status code', async (t) => {
-    mongoose(); //Connect to the database using Mongoose
-    const token = jwtSign({id: user._id}); //Generate a JWT token for the user
-    //create new dashboard for user with name=Dashname
-    Dashboardsec = await Dashboard({name: 'NameFirst',layout:[],items:{},nextId: 6,password: '12345678',shared: 0,views: 10,
-                                    owner: user._id,createdAt:'',
-    }).save();
-    const new_name = 'NameSec' ;  //dashboard name different from the existing one
-    const dashBody = {name:new_name};
-    //send POST request with authenticated user's token in query and new dashboard name in body
-    const {body,statusCode} = await t.context
+  mongoose(); //Connect to the database using Mongoose
+  const token = jwtSign({id: user._id}); //Generate a JWT token for the user
+  //create new dashboard for user with name=Dashname
+  Dashboardsec = await Dashboard({name: 'NameFirst',layout:[],items:{},nextId: 6,password: '12345678',shared: 0,views: 10,
+                                  owner: user._id,createdAt:'',
+  }).save();
+  const new_name = 'NameSec' ;  //dashboard name different from the existing one
+  const dashBody = {name:new_name};
+  //send POST request with authenticated user's token in query and new dashboard name in body
+  const {body,statusCode} = await t.context.request
+    .post(`/create-dashboard?token=${token}`)
+    .send(dashBody);
+
+  t.is(statusCode, 200); //verify status code is 200
+  t.true(body.success); //verify response has success property set to true
+  t.is(body.dashboard.name, new_name); //verify dashboard name is updated to new_name
+});
 
 // Test to verify that POST request to /create-dashboard with a duplicate name returns a 409 Conflict status code
 test('POST /create-dashboard with duplicate name returns 409 status code', async (t) => {
@@ -101,8 +108,6 @@ test('POST /create-dashboard with duplicate name returns 409 status code', async
     t.is(statusCode, 200);
     t.assert(body.success);
   });
-  
-
 
 test('GET /dashboard returns correct response when selected dashboard exists', async (t) => {
   mongoose();
