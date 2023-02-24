@@ -267,30 +267,20 @@ test('POST /clone-dashboard returns correct response when dashboard with same na
 test('POST /check-password-needed returns correct response if dashboard does not exist', async (t) => {
   mongoose();
   const token = jwtSign({id: user._id});
-  
   // Creating a new dashboard for testing purposes
-  newdash = await Dashboard({
-  name: 'Dash',
-  layout:[],
-  items:{},
-  nextId: 6,
-  password: '',
-  shared: 0,
-  views: 21,
-  owner: user._id,
-  createdAt:'',
-  }).save();
+  newdash = await Dashboard({name: 'Dash',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 21,owner: user._id,createdAt:'',
+}).save();
   
   // Using a non-existing ID to test that the correct response is returned
   const wrongId = '67ab17187c66d60ad82cf6cc';
   
-  const Dash = {
+  const Dashb = {
   user: user._id, // Using the ID of the user who owns the dashboard
   dashboardId: wrongId,
   };
   
   // Making the POST request to check the password
-  const {body} = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`, {json: Dash});
+  const {body} = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`, {json: Dashb});
   
   t.is(body.status, 409);
   t.is(body.message, 'The specified dashboard has not been found.');
@@ -306,7 +296,7 @@ test('POST /check-password-needed returns correct response if dashboard does not
   name: 'Dash',
   layout:[],
   items:{},
-  nextId: 6,
+  nextId: 7,
   password: 'null',
   shared: 1,
   views: 21,
