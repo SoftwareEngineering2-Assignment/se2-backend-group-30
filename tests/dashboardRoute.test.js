@@ -18,59 +18,48 @@ test.after.always((t) => {
   DeleteUsersAndDashboards(); //Remove all test users and dashboards from the database
 });
 
-//test that GET /dashboards returns correct statusCode=200 and body got an authenticate user
+//Test to verify that GET request to /dashboards returns the correct response and status code
 test('GET /dashboards returns correct response and status code', async (t) => {
     mongoose(); //Connect to the database using Mongoose
     const token = jwtSign({id: user._id}); //Generate a JWT token for the user
     //Create 2 new test dashboards for the authenticated user
     dash1 = await Dashboard({name: 'Dashboardfirst',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 2,owner: user._id,createdAt:'',
     }).save();
-
-    dash2 = await Dashboard({name: 'dashSec',layout:[],items:{},nextId: 2,password: '',shared: 1,views: 7,owner: user._id,createdAt:'',
-    }).save();
-
-    //send GET request with authenticated user's token in query
+    dash2 = await Dashboard({name: 'dashSec',layout:[],items:{},nextId: 2,password: '',shared: 2,views: 9,owner: user._id,createdAt:'',
+    }).save(); 
     const {body, statusCode} = await t.context.got(`dashboards/dashboards?token=${token}`);
     //check response
     t.is(statusCode, 200); //Verify that the status code is 200
     t.assert(body.success); //Verify that the response body contains a "success" property
-  });
+});
 
-//test that POST /create-dashboard successfully creates new dashboard when user is authenticated and dashboard name doesn't already exist
- test('POST /create-dashboard returns correct response and status code', async (t) => {
+//Test to verify that POST request to /create-dashboard returns the correct response and status code
+test('POST /create-dashboard returns correct response and status code', async (t) => {
     mongoose(); //Connect to the database using Mongoose
     const token = jwtSign({id: user._id}); //Generate a JWT token for the user
     //create new dashboard for user with name=Dashname
     Dashboardsec = await Dashboard({name: 'NameFirst',layout:[],items:{},nextId: 6,password: '12345678',shared: 0,views: 10,
                                     owner: user._id,createdAt:'',
     }).save();
-
     const new_name = 'NameSec' ;  //dashboard name different from the existing one
     const dashBody = {name:new_name};
     //send POST request with authenticated user's token in query and new dashboard name in body
-    const {body,statusCode} = await t.context.got.post(`dashboards/create-dashboard?token=${token}`,{json:dashBody});;
-    //check response
-    t.is(statusCode,200);
-    t.assert(body.success);
-})
-// Test that POST /create-dashboard successfully doesn't create new dashboard, when another dashboard with the same name already exists
-test('POST /create-dashboard returns correct response and status code for dupl dashboard', async (t) => {
-    // Set up the test by creating a dashboard with the name "Dash" using the Dashboard model
-    await Dashboard.create({
-      name: 'Dash', layout: [], items: {}, nextId: 1, password: '', shared: 0, views: 2, owner: user._id, createdAt: ''});
-  
-    // Create a new dashboard with the same name as the existing one
-    const NewDash = new Dashboard({ name: 'Dash', nextId: 2 });
-    const token = jwtSign({id: user._id}); //Generate a JWT token for the user
-    // Send a POST request to the /create-dashboard endpoint with the authenticated user's token in the query and the new dashboard's name in the body
-    const { body } = await t.context.got.post(`dashboards/create-dashboard?token=${token}`, { json: NewDash });
-  
-    // Check that the response has a status of 409 and a message indicating that a dashboard with the same name already exists
-    t.is(body.status, 409);
-    t.is(body.message, 'A dashboard with that name already exists.');
+    const {body,statusCode} = await t.context
+
+// Test to verify that POST request to /create-dashboard with a duplicate name returns a 409 Conflict status code
+test('POST /create-dashboard with duplicate name returns 409 status code', async (t) => {
+  mongoose(); //Connect to the database using Mongoose
+  const token = jwtSign({id: user._id}); //Generate a JWT token for the user
+  const existingDashboard = await Dashboard.findOne({ owner: user._id }); //Find an existing dashboard for the user
+  const { body, statusCode } = await t.context.got.post(`dashboards/create-dashboard?token=${token}`, {
+      json: { name: existingDashboard.name } //Set the new dashboard's name to the same name as the existing dashboard
   });
+  //Check response
+  t.is(statusCode, 409); //Verify that the status code is 409 Conflict
+  t.is(body.message, 'A dashboard with that name already exists.'); //Verify that the response body contains the correct error message
+});
   
-  // Test that POST /delete-dashboard returns correct response when the given id doesn't belong to an existing dashboard
+
   test('POST /delete-dashboard returns correct response when selected dashboard is not found ', async (t) => {
     // Set up the test by creating a new user token
     const token = jwtSign({ id: user._id });
@@ -78,15 +67,15 @@ test('POST /create-dashboard returns correct response and status code for dupl d
     // Set the id of the dashboard to be deleted to 0, which should not exist
     const body_del = { id: 0 };
   
-    // Send a POST request to the /delete-dashboard endpoint with the authenticated user's token in the query and the dashboard id in the body
+
     const { body } = await t.context.got.post(`dashboards/delete-dashboard?token=${token}`, { json: body_del });
   
-    // Check that the response has a status of 409 and a message indicating that the selected dashboard has not been found
+
     t.is(body.status, 409);
     t.is(body.message, 'The selected dashboard has not been found.');
   });
   
-  // Test that POST /delete-dashboard successfully deletes a dashboard when given a correct dashboard id
+
   test('POST /delete-dashboard returns correct response when selected dashboard is found and deleted', async (t) => {
     // Set up the test by creating a new user token and a dashboard to be deleted
     const token = jwtSign({ id: user._id });
@@ -114,7 +103,7 @@ test('POST /create-dashboard returns correct response and status code for dupl d
   });
   
 
-//test that GET /dashboard returns correct response when an existing dashboard's id is given
+
 test('GET /dashboard returns correct response when selected dashboard exists', async (t) => {
   mongoose();
   const token = jwtSign({id: user._id});
@@ -131,7 +120,7 @@ test('GET /dashboard returns correct response when selected dashboard exists', a
 
 });
 
-//test that GET /dashboard returns correct response when the id given doesn't belong to an existing dashboard
+
 test('GET /dashboard returns correct response when selected dashboard does not exists', async (t) => {
   mongoose();
   const token = jwtSign({id:user._id});
@@ -143,7 +132,7 @@ test('GET /dashboard returns correct response when selected dashboard does not e
   t.is(body.message, 'The selected dashboard has not been found.');
 });
 
-//test that POST /save-dashboard updates dashboard successfully when an existing dashboard's id is given
+
 test('POST /save-dashboard returns correct response when selected dashboard exists and is updated successfully', async (t) => {
   mongoose();
   const token = jwtSign({id: user._id});
@@ -160,19 +149,52 @@ test('POST /save-dashboard returns correct response when selected dashboard exis
 
 });
 
-//test that POST /save-dashboard returns correct response when given id doesn't belong to an existing dashboard
+// Test to verify that GET request to /dashboards with an invalid token returns a 401 Unauthorized status code
+test('GET /dashboards with invalid token returns 401 status code', async (t) => {
+  mongoose(); //Connect to the database using Mongoose
+  const token = 'invalid-token'; //Set an invalid token
+  const {statusCode} = await t.context.got(`dashboards/dashboards?token=${token}`);
+  //Check response
+  t.is(statusCode, 401); //Verify that the status code is 401 Unauthorized
+});
+
+// Test to verify that GET request to /dashboards without a token returns a 401 Unauthorized status code
+test('GET /dashboards without token returns 401 status code', async (t) => {
+  mongoose(); //Connect to the database using Mongoose
+  const {statusCode} = await t.context.got('dashboards/dashboards');
+  //Check response
+  t.is(statusCode, 401); //Verify that the status code is 401 Unauthorized
+});
+
+// Test to verify that POST request to /create-dashboard with an invalid token returns a 401 Unauthorized status code
+test('POST /create-dashboard with invalid token returns 401 status code', async (t) => {
+  mongoose(); //Connect to the database using Mongoose
+  const token = 'invalid-token'; //Set an invalid token
+  const {statusCode} = await t.context.got.post(`dashboards/create-dashboard?token=${token}`);
+  //Check response
+  t.is(statusCode, 401); //Verify that the status code is 401 Unauthorized
+});
+
+// Test to verify that POST request to /create-dashboard without a token returns a 401 Unauthorized status code
+test('POST /create-dashboard without token returns 401 status code', async (t) => {
+  mongoose(); //Connect to the database using Mongoose
+  const {statusCode} = await t.context.got.post('dashboards/create-dashboard');
+  //Check response
+  t.is(statusCode, 401); //Verify that the status code is 401 Unauthorized
+});
+
 test('POST /save-dashboard returns correct response when selected dashboard is not found ', async (t) => {
   mongoose();
   const token = jwtSign({id: user._id});
   const body_id= {id:0} //dashboard id not existing
-//send POST request with authenticated user's token in query and dashboard id in body
+
   const {body} = await t.context.got.post(`dashboards/save-dashboard?token=${token}`,{ json :body_id});
   //check response
   t.is(body.status, 409);
   t.is(body.message, 'The selected dashboard has not been found.');
 });
 
-//test POST/clone-dashboard clones the dashboard successfully when correct dashboard id and name are given
+
 test('POST /clone-dashboard returns correct response when dashboard clones successfully', async (t) => {
   mongoose();
   const token = jwtSign({id: user._id});
@@ -190,7 +212,7 @@ test('POST /clone-dashboard returns correct response when dashboard clones succe
   t.assert(body.success);
 });
 
-//test POST/clone-dashboard returns correct response when correct in is given but new Dashboard name already exists 
+
 test('POST /clone-dashboard returns correct response when dashboard with same name already exists', async (t) => {
   mongoose();
   const token = jwtSign({id: user._id});
@@ -210,3 +232,4 @@ test('POST /clone-dashboard returns correct response when dashboard with same na
   t.is(body.status, 409);
   t.is(body.message, 'A dashboard with that name already exists.');
 });
+
