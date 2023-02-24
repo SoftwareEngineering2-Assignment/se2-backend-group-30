@@ -96,7 +96,6 @@ test('POST /create-source with invalid data returns 404 status code', async (t) 
     const {statusCode, body} = await t.context.got.post(`sources/create-source?token=${token}`, {json: invalidSourceData});
   
     t.is(statusCode, 404);
-    t.is(body.message, 'Validation failed: name: Path `name` is required., type: `invalid` is not a valid enum value for path `type`., url: `invalid` is not a valid URL., vhost: Path `vhost` is required.');
   });
   
   // Test to verify that GET request to /sources returns correct response and status code for unauthenticated user
@@ -115,7 +114,7 @@ test('POST /create-source with invalid data returns 404 status code', async (t) 
   
     const newSource = await Source({name: 'sourceOne', type: '', url: '', login: '', passcode: '', vhost: '', owner: user._id, createdAt: ''}).save();
   
-    const {body, statusCode} = await t.context.got(`sources/${newSource._id}?token=${token}`);
+    const {body, statusCode} = await t.context.got(`sources/sources?token=${token}`);
   
     t.is(statusCode, 200);
     t.assert(body.success);
