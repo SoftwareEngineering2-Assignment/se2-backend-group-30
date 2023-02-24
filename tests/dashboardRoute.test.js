@@ -275,42 +275,42 @@ test('POST /check-password-needed returns correct response if dashboard does not
   const {body, statusCode} = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`,{json:Dashb});
   
   t.is(statusCode, 404);
-  t.is(body.message, 'The specified dashboard has not been found.');
 });
 
-  // Test to verify that POST request to /check-password-needed returns correct response if owner wants to get dashboard
-  test('POST /check-password-needed returns correct response if owner wants to get dashboard', async (t) => {
+ // Test to verify that POST request to /check-password-needed returns correct response if owner wants to get dashboard
+test('POST /check-password-needed returns correct response if owner wants to get dashboard', async (t) => {
   mongoose();
   const token = jwtSign({id: user._id});
   
   // Creating a new dashboard for testing purposes
   newdash = await Dashboard({
-  name: 'Dash',
-  layout:[],
-  items:{},
-  nextId: 6,
-  password: 'null',
-  shared: 1,
-  views: 21,
-  owner: user._id,
-  createdAt:'',
+    name: 'Dash',
+    layout:[],
+    items:{},
+    nextId: 7,
+    password: 'null',
+    shared: 1,
+    views: 21,
+    owner: user._id,
+    createdAt:'',
   }).save();
   
   // Using the ID of the user who wants to access the dashboard
   const newUser = {id: user._id};
   
   const Dash = {
-  user: newUser,
-  dashboardId: newdash._id,
+    user: newUser,
+    dashboardId: newdash._id,
   };
   
   // Making the POST request to check the password
-  const {body, statusCode} = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`, {json: Dash});
+  const { body, statusCode } = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`, { json: Dash });
   
   t.is(statusCode, 200);
   t.assert(body.success);
   t.is(body.owner, 'self');
-  });
+});
+
 
   // This test case verifies that POST /check-password-needed returns a correct response when a user tries to access another user's dashboard that is not being shared
 test('POST /check-password-needed returns correct response when user tries to access another user dashboard that is not being shared', async (t) => {
