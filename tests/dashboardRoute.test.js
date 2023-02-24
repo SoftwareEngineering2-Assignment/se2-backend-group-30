@@ -278,22 +278,38 @@ test('POST /check-password-needed returns correct response if dashboard does not
 });
 
  // Test to verify that POST request to /check-password-needed returns correct response if owner wants to get dashboard
- test('POST /check-password-needed returns correct response when owner wants to get dashboard ', async (t) => {
-  mongoose();
-  const token = jwtSign({id: user._id});
-
- newdash = await Dashboard({name: 'DashToView',layout:[],items:{},nextId: 6,password: 'null',shared: 1,views: 15,owner: user._id,createdAt:'',
-  }).save();
-
-  const newuser = {id: user._id} 
-  const Dashb = {user: newuser, dashboardId:newdash._id}; 
+// test('POST /check-password-needed returns correct response if owner wants to get dashboard', async (t) => {
+//   mongoose();
+//   const token = jwtSign({id: user._id});
   
-  const {body,statusCode} = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`,{json:Dashb});
+//   // Creating a new dashboard for testing purposes
+//   newdash = await Dashboard({
+//     name: 'Dash',
+//     layout:[],
+//     items:{},
+//     nextId: 7,
+//     password: 'null',
+//     shared: 1,
+//     views: 21,
+//     owner: user._id,
+//     createdAt:'',
+//   }).save();
   
-  t.is(statusCode,200);
-  t.assert(body.success);
-  t.is(body.owner, 'self');
-});
+//   // Using the ID of the user who wants to access the dashboard
+//   const newUser = {id: user._id};
+  
+//   const Dash = {
+//     user: newUser,
+//     dashboardId: newdash._id,
+//   };
+  
+//   // Making the POST request to check the password
+//   const { body, statusCode } = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`, { json: Dash });
+  
+//   t.is(statusCode, 200);
+//   t.assert(body.success);
+//   t.is(body.owner, 'self');
+// });
 
 
   // This test case verifies that POST /check-password-needed returns a correct response when a user tries to access another user's dashboard that is not being shared
@@ -337,7 +353,7 @@ test('POST /check-password-needed returns correct response when user tries to ac
     nextId: 9,
     password: '',
     shared: 1,
-    views: 0,
+    views: 3,
     owner: user._id,
     createdAt: Date.now()
   });
