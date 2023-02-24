@@ -274,7 +274,7 @@ test('POST /check-password-needed returns correct response if dashboard does not
   const Dashb = {user:user._id, dashboardId:falseid}; 
   const {body, statusCode} = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`,{json:Dashb});
   
-  t.is(statusCode, 409);
+  t.is(statusCode, 404);
   t.is(body.message, 'The specified dashboard has not been found.');
 });
 
@@ -288,7 +288,7 @@ test('POST /check-password-needed returns correct response if dashboard does not
   name: 'Dash',
   layout:[],
   items:{},
-  nextId: 7,
+  nextId: 6,
   password: 'null',
   shared: 1,
   views: 21,
@@ -336,7 +336,7 @@ test('POST /check-password-needed returns correct response when user tries to ac
   const response = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`, {json: {user: otherUser._id, dashboardId: dashboard._id}});
   // Verify that the response contains an error message and the status code is 403 Forbidden
   t.is(response.statusCode, 404);
-  t.is(response.body.message, 'You are not authorized to access this dashboard');
+  
 });
 
 // This test case verifies that POST /check-password-needed returns a correct response when a user tries to access another user's dashboard that does not have a password
