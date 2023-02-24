@@ -323,9 +323,64 @@ test('POST /check-password-needed returns correct response if dashboard does not
   };
   
   // Making the POST request to check the password
-  const {body, statusCode} = await t.context.got.post(dashboardsPassword/check-password-needed?token=${token}, {json: Dash});
+  const {body, statusCode} = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`, {json: Dash});
   
   t.is(statusCode, 200);
   t.assert(body.success);
   t.is(body.owner, 'self');
   });
+
+  // This test case verifies that POST /check-password-needed returns a correct response when a user tries to access another user's dashboard that is not being shared
+test('POST /check-password-needed returns correct response when user tries to access another user dashboard that is not being shared', async (t) => {
+  // Connect to MongoDB
+  mongoose();
+  // Generate JWT token for the user
+  const token = jwtSign({id: user._id});
+  // Create a dashboard owned by the user
+  const dashboard = await Dashboard.create({
+    name: 'Test Dashboard',
+    layout: [],
+    items: {},
+    nextId: 0,
+    password: '',
+    shared: 0,
+    views: 0,
+    owner: user._id,
+    createdAt: Date.now()
+  });
+  // Create another user
+  const otherUser = await User.create({username: 'otherUser',password: 'password',email: 'email'});
+  // Attempt to access the dashboard owned by the other user
+  const response = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`, {json: {user: otherUser._id, dashboardId: dashboard._id}});
+  // Verify that the response contains an error message and the status code is 403 Forbidden
+  t.is(response.statusCode, 403);
+  t.is(response.body.message, 'You are not authorized to access this dashboard');
+});
+
+// This test case verifies that POST /check-password-needed returns a correct response when a user tries to access another user's dashboard that does not have a password
+test('POST /check-password-needed returns correct response when user tries to access another user dashboard that does not have a password', async (t) => {
+  // Connect to MongoDB
+  mongoose();
+  // Generate JWT token for the user
+  const token = jwtSign({id: user._id});
+  // Create a dashboard owned by the other user
+  const dashboard = await Dashboard.create({
+    name: 'Test Dashboard',
+    layout: [],
+    items: {},
+    nextId: 0,
+    password: '',
+    shared: 1,
+    views: 0,
+    owner: user._id,
+    createdAt: Date.now()
+  });
+  // Create another user
+  const otherUser = await User.create({username: 'otherUser',password: 'password',email: 'email'});
+  // Attempt to access the dashboard owned by the other user
+  const response = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`, {json: {user: otherUser._id, dashboardId: dashboard._id}});
+  // Verify that the response contains the correct owner information and the status code is 200 OK
+  t.is(response.statusCode, 200);
+  t.is(response.body.owner, 'otherUser');
+  t.is(response.body.success, true);
+});
