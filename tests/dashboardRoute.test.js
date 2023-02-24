@@ -20,17 +20,40 @@ test.after.always((t) => {
 
 //Test to verify that GET request to /dashboards returns the correct response and status code
 test('GET /dashboards returns correct response and status code', async (t) => {
-    mongoose(); //Connect to the database using Mongoose
-    const token = jwtSign({id: user._id}); //Generate a JWT token for the user
-    //Create 2 new test dashboards for the authenticated user
-    dash1 = await Dashboard({name: 'Dashboardfirst',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 2,owner: user._id,createdAt:'',
-    }).save();
-    dash2 = await Dashboard({name: 'dashSec',layout:[],items:{},nextId: 2,password: '',shared: 2,views: 9,owner: user._id,createdAt:'',
-    }).save(); 
-    const {body, statusCode} = await t.context.got(`dashboards/dashboards?token=${token}`);
-    //check response
-    t.is(statusCode, 200); //Verify that the status code is 200
-    t.assert(body.success); //Verify that the response body contains a "success" property
+  mongoose(); //Connect to the database using Mongoose
+  const token = jwtSign({id: user._id}); //Generate a JWT token for the user
+
+  //Create 2 new test dashboards for the authenticated user
+  dash1 = await Dashboard({
+    name: 'Dashboardfirst',
+    layout: [],
+    items: {},
+    nextId: 1,
+    password: '',
+    shared: false, // fix for shared property
+    views: 2,
+    owner: user._id,
+    createdAt: '',
+  }).save();
+  dash2 = await Dashboard({
+    name: 'dashSec',
+    layout: [],
+    items: {},
+    nextId: 2,
+    password: '',
+    shared: true, // fix for shared property
+    views: 9,
+    owner: user._id,
+    createdAt: '',
+  }).save();
+
+  const {body, statusCode} = await t.context
+    .got(`dashboards/dashboards?token=${token}`)
+    .json();
+
+  //check response
+  t.is(statusCode, 200); //Verify that the status code is 200
+  t.assert(body.success); //Verify that the response body contains a "success" property
 });
 
 //Test to verify that POST request to /create-dashboard returns the correct response and status code
