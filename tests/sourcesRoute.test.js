@@ -111,7 +111,7 @@ test('POST /create-source with invalid data returns 404 status code', async (t) 
     };
     
     // Send a POST request to create a new source with the invalid data
-    const {statusCode, body} = await t.context.got.post(sources/create-source?token=${token}, {json: invalidSourceData});
+    const {statusCode, body} = await t.context.got.post(`sources/create-source?token=${token}`, {json: invalidSourceData});
     
     // Assert that the response status code is 404
     t.is(statusCode, 404);
