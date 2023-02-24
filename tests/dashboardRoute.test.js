@@ -212,7 +212,6 @@ test('POST /clone-dashboard returns correct response when dashboard clones succe
   t.assert(body.success);
 });
 
-
 test('POST /clone-dashboard returns correct response when dashboard with same name already exists', async (t) => {
   mongoose();
   const token = jwtSign({id: user._id});
@@ -232,4 +231,3 @@ test('POST /clone-dashboard returns correct response when dashboard with same na
   t.is(body.status, 409);
   t.is(body.message, 'A dashboard with that name already exists.');
 });
-
