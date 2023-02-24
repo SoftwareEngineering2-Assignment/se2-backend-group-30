@@ -85,9 +85,9 @@ test('POST /create-dashboard with duplicate name returns 409 status code', async
   // Create dupl
   const DuplDash = new Dashboard({name:'DashOne',nextId:2});
   // Send new dashboard
-  const {statusCode, body} = await t.context.got.post(`dashboards/create-dashboard?token=${token}`,{ json :DuplDash});
+  const {body} = await t.context.got.post(`dashboards/create-dashboard?token=${token}`,{ json :DuplDash});
   //Check response
-  t.is(statusCode, 409); //Verify that the status code is 409 Conflict
+  t.is(body.status, 409); //Verify that the status code is 409 Conflict
   t.is(body.message, 'A dashboard with that name already exists.'); //Verify that the response body contains the correct error message
 });
 
