@@ -263,20 +263,20 @@ test('POST /clone-dashboard returns correct response when dashboard with same na
 });
 
   
-// test('POST /check-password-needed returns correct response if dashboard does not exists', async (t) => {
-//   mongoose();
-//   const token = jwtSign({id: user._id});
+test('POST /check-password-needed returns correct response if dashboard does not exists', async (t) => {
+  mongoose();
+  const token = jwtSign({id: user._id});
  
-//  dash = await Dashboard({name: 'Dashname',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 15,owner: user._id,createdAt:'',
-//   }).save();
-//   const falseid = '67ab17187c66d60ad82cf6cc'; //wrond dashboard in 
+ dash = await Dashboard({name: 'Dashname',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 15,owner: user._id,createdAt:'',
+  }).save();
+  const falseid = '67ab17187c66d60ad82cf6cc'; //wrond dashboard in 
   
-//   const Dashb = {user:user._id, dashboardId:falseid}; 
-//   const {body, statusCode}} = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`,{json:Dashb});
+  const Dashb = {user:user._id, dashboardId:falseid}; 
+  const {body, statusCode}} = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`,{json:Dashb});
   
-//   t.is(statusCode, 409);
-//   t.is(body.message, 'The specified dashboard has not been found.');
-// });
+  t.is(statusCode, 409);
+  t.is(body.message, 'The specified dashboard has not been found.');
+});
 
   // Test to verify that POST request to /check-password-needed returns correct response if owner wants to get dashboard
   test('POST /check-password-needed returns correct response if owner wants to get dashboard', async (t) => {
