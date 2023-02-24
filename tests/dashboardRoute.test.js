@@ -47,9 +47,7 @@ test('GET /dashboards returns correct response and status code', async (t) => {
     createdAt: '',
   }).save();
 
-  const {body, statusCode} = await t.context
-    .got(`dashboards/dashboards?token=${token}`)
-    .json();
+  const {body, statusCode} = await t.context.got(`dashboards/dashboards?token=${token}`);
 
   //check response
   t.is(statusCode, 200); //Verify that the status code is 200
