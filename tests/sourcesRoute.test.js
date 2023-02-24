@@ -52,10 +52,10 @@ test('GET /sources returns correct response and status code for authenticated us
     const newSource = await Source({name:'sourceOne',type: '',url:'',login:'',passcode:'',vhost: '',owner: user._id,createdAt:''}).save();
   
     // Send GET request to /sources with authentication token
-    const {body, statusCode} = await t.context.got(`sources/sources?token=${token}`);
+    const {body} = await t.context.got(`sources/sources?token=${token}`);
   
     // Verify that the status code is 200
-    t.is(statusCode,200);
+    t.is(body.status,200);
   
     // Verify that the response body contains a "success" key
     t.assert(body.success);
@@ -93,18 +93,18 @@ test('POST /create-source with invalid data returns 400 status code', async (t) 
     mongoose();
     const token = jwtSign({id: user._id});
     const invalidSourceData = {name: '', type: 'invalid', url: 'invalid', login: '', passcode: '', vhost: '', owner: user._id, createdAt:''};
-    const {statusCode, body} = await t.context.got.post(`sources/create-source?token=${token}`, {json: invalidSourceData});
+    const {body} = await t.context.got.post(`sources/create-source?token=${token}`, {json: invalidSourceData});
   
-    t.is(statusCode, 400);
+    t.is(body.status, 400);
     t.is(body.message, 'Validation failed: name: Path `name` is required., type: `invalid` is not a valid enum value for path `type`., url: `invalid` is not a valid URL., vhost: Path `vhost` is required.');
   });
   
   // Test to verify that GET request to /sources returns correct response and status code for unauthenticated user
   test('GET /sources returns correct response and status code for unauthenticated user', async (t) => {
     mongoose();
-    const {statusCode, body} = await t.context.got('sources/sources');
+    const {body} = await t.context.got('sources/sources');
   
-    t.is(statusCode, 401);
+    t.is(body.status, 401);
     t.is(body.message, 'Authentication Error: No token provided.');
   });
   
@@ -115,9 +115,9 @@ test('POST /create-source with invalid data returns 400 status code', async (t) 
   
     const newSource = await Source({name: 'sourceOne', type: '', url: '', login: '', passcode: '', vhost: '', owner: user._id, createdAt: ''}).save();
   
-    const {statusCode, body} = await t.context.got(`sources/${newSource._id}?token=${token}`);
+    const {body} = await t.context.got(`sources/${newSource._id}?token=${token}`);
   
-    t.is(statusCode, 200);
+    t.is(body.status, 200);
     t.assert(body.success);
   });
   
@@ -128,9 +128,9 @@ test('POST /create-source with invalid data returns 400 status code', async (t) 
   
     const nonExistentId = '5f5b6b0a8f82c304a85d6dd7';
     
-    const {statusCode, body} = await t.context.got(`sources/${nonExistentId}?token=${token}`);
+    const {body} = await t.context.got(`sources/${nonExistentId}?token=${token}`);
   
-    t.is(statusCode, 404);
+    t.is(body.status, 404);
     t.is(body.message, `Source with id ${nonExistentId} does not exist`);
   });
 
