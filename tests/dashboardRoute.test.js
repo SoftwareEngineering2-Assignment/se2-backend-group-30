@@ -80,12 +80,8 @@ test('POST /create-dashboard with duplicate name returns 409 status code', async
   mongoose(); //Connect to the database using Mongoose
   const token = jwtSign({id: user._id}); //Generate a JWT token for the user
   // Create a new dashboard
-  await Dash.create({name: 'DashOne',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 6, owner: user._id,createdAt:'',
-    });
+  await Dash.create({name: 'DashOne',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 6, owner: user._id,createdAt:'' });
 
-  const { body, statusCode } = await t.context.got.post(`dashboards/create-dashboard?token=${token}`, {
-      json: { name: existingDashboard.name } //Set the new dashboard's name to the same name as the existing dashboard
-  });
 // Create dupl
   const DuplDash = new Dashboard({name:'DashOne',nextId:2});
   // Send new dashboard
