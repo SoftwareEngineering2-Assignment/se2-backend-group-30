@@ -290,7 +290,7 @@ test('POST /check-password-needed returns correct response if dashboard does not
   };
   
   // Making the POST request to check the password
-  const {body} = await t.context.got.post(dashboardsPassword/check-password-needed?token=${token}, {json: Dash});
+  const {body} = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`, {json: Dash});
   
   t.is(body.status, 409);
   t.is(body.message, 'The specified dashboard has not been found.');
