@@ -278,35 +278,19 @@ test('POST /check-password-needed returns correct response if dashboard does not
 });
 
  // Test to verify that POST request to /check-password-needed returns correct response if owner wants to get dashboard
-test('POST /check-password-needed returns correct response if owner wants to get dashboard', async (t) => {
+ test('POST /check-password-needed returns correct response when owner wants to get dashboard ', async (t) => {
   mongoose();
   const token = jwtSign({id: user._id});
-  
-  // Creating a new dashboard for testing purposes
-  newdash = await Dashboard({
-    name: 'Dash',
-    layout:[],
-    items:{},
-    nextId: 7,
-    password: 'null',
-    shared: 1,
-    views: 21,
-    owner: user._id,
-    createdAt:'',
+
+ newdash = await Dashboard({name: 'DashToView',layout:[],items:{},nextId: 6,password: 'null',shared: 1,views: 15,owner: user._id,createdAt:'',
   }).save();
+
+  const newuser = {id: user._id} 
+  const Dashb = {user: newuser, dashboardId:newdash._id}; 
   
-  // Using the ID of the user who wants to access the dashboard
-  const newUser = {id: user._id};
+  const {body,statusCode} = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`,{json:Dashb});
   
-  const Dash = {
-    user: newUser,
-    dashboardId: newdash._id,
-  };
-  
-  // Making the POST request to check the password
-  const { body, statusCode } = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`, { json: Dash });
-  
-  t.is(statusCode, 200);
+  t.is(statusCode,200);
   t.assert(body.success);
   t.is(body.owner, 'self');
 });
