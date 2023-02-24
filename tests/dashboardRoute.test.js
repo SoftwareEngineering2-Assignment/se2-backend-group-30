@@ -261,3 +261,71 @@ test('POST /clone-dashboard returns correct response when dashboard with same na
   t.is(body.status, 409);
   t.is(body.message, 'A dashboard with that name already exists.');
 });
+
+
+// Test to verify that POST request to /check-password-needed returns correct response if dashboard does not exist
+test('POST /check-password-needed returns correct response if dashboard does not exist', async (t) => {
+  mongoose();
+  const token = jwtSign({id: user._id});
+  
+  // Creating a new dashboard for testing purposes
+  newdash = await Dashboard({
+  name: 'Dash',
+  layout:[],
+  items:{},
+  nextId: 6,
+  password: '',
+  shared: 0,
+  views: 21,
+  owner: user._id,
+  createdAt:'',
+  }).save();
+  
+  // Using a non-existing ID to test that the correct response is returned
+  const wrongId = '67ab17187c66d60ad815r6og';
+  
+  const Dash = {
+  user: user._id, // Using the ID of the user who owns the dashboard
+  dashboardId: wrongId,
+  };
+  
+  // Making the POST request to check the password
+  const {body} = await t.context.got.post(dashboardsPassword/check-password-needed?token=${token}, {json: Dash});
+  
+  t.is(body.status, 409);
+  t.is(body.message, 'The specified dashboard has not been found.');
+  });
+  
+  // Test to verify that POST request to /check-password-needed returns correct response if owner wants to get dashboard
+  test('POST /check-password-needed returns correct response if owner wants to get dashboard', async (t) => {
+  mongoose();
+  const token = jwtSign({id: user._id});
+  
+  // Creating a new dashboard for testing purposes
+  newdash = await Dashboard({
+  name: 'Dash',
+  layout:[],
+  items:{},
+  nextId: 6,
+  password: 'null',
+  shared: 3,
+  views: 21,
+  owner: user._id,
+  createdAt:'',
+  }).save();
+  
+  // Using the ID of the user who wants to access the dashboard
+  const newUser = {id: user._id};
+  
+  const Dash = {
+  user: newUser,
+  dashboardId: newdash._id,
+  };
+  
+  // Making the POST request to check the password
+  const {body, statusCode} = await t.context.got.post(dashboardsPassword/check-password-needed?token=${token}, {json: Dash});
+  
+  t.is(statusCode, 200);
+  t.assert(body.success);
+  t.is(body.owner, 'self');
+  });
