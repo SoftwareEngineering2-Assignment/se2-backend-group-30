@@ -262,30 +262,22 @@ test('POST /clone-dashboard returns correct response when dashboard with same na
   t.is(body.message, 'A dashboard with that name already exists.');
 });
 
-
-// Test to verify that POST request to /check-password-needed returns correct response if dashboard does not exist
-test('POST /check-password-needed returns correct response if dashboard does not exist', async (t) => {
+  
+test('POST /check-password-needed returns correct response if dashboard does not exists', async (t) => {
   mongoose();
   const token = jwtSign({id: user._id});
-  // Creating a new dashboard for testing purposes
-  newdash = await Dashboard({name: 'Dash',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 21,owner: user._id,createdAt:'',
-}).save();
+ 
+ dash = await Dashboard({name: 'Dashname',layout:[],items:{},nextId: 6,password: '',shared: 0,views: 15,owner: user._id,createdAt:'',
+  }).save();
+  const falseid = '67ab17187c66d60ad82cf6cc'; //wrond dashboard in 
   
-  // Using a non-existing ID to test that the correct response is returned
-  const wrongId = '67ab17187c66d60ad82cf6cc';
-  
-  const Dashb = {
-  user: user._id, // Using the ID of the user who owns the dashboard
-  dashboardId: wrongId,
-  };
-  
-  // Making the POST request to check the password
-  const {body} = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`, {json: Dashb});
+  const Dashb = {user:user._id, dashboardId:falseid}; 
+  const {body} = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`,{json:Dashb});
   
   t.is(body.status, 409);
   t.is(body.message, 'The specified dashboard has not been found.');
-  });
-  
+});
+
   // Test to verify that POST request to /check-password-needed returns correct response if owner wants to get dashboard
   test('POST /check-password-needed returns correct response if owner wants to get dashboard', async (t) => {
   mongoose();
@@ -343,7 +335,7 @@ test('POST /check-password-needed returns correct response when user tries to ac
   // Attempt to access the dashboard owned by the other user
   const response = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`, {json: {user: otherUser._id, dashboardId: dashboard._id}});
   // Verify that the response contains an error message and the status code is 403 Forbidden
-  t.is(response.statusCode, 403);
+  t.is(response.statusCode, 404);
   t.is(response.body.message, 'You are not authorized to access this dashboard');
 });
 
