@@ -282,7 +282,7 @@ test('POST /check-password-needed returns correct response if dashboard does not
   }).save();
   
   // Using a non-existing ID to test that the correct response is returned
-  const wrongId = '67ab17187c66d60ad815r6og';
+  const wrongId = '67ab17187c66d60ad82cf6cc';
   
   const Dash = {
   user: user._id, // Using the ID of the user who owns the dashboard
