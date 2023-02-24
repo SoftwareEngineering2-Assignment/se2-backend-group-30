@@ -80,16 +80,17 @@ test('POST /create-dashboard with duplicate name returns 409 status code', async
   mongoose(); //Connect to the database using Mongoose
   const token = jwtSign({id: user._id}); //Generate a JWT token for the user
   // Create a new dashboard
-  await Dash.create({name: 'DashOne',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 6, owner: user._id,createdAt:'' });
+  await Dashboard.create({name: 'DashOne',layout:[],items:{},nextId: 1,password: '',shared: 0,views: 6, owner: user._id,createdAt:'' });
 
-// Create dupl
+  // Create dupl
   const DuplDash = new Dashboard({name:'DashOne',nextId:2});
   // Send new dashboard
-  const {body} = await t.context.got.post(`dashboards/create-dashboard?token=${token}`,{ json :DuplDash});
+  const {statusCode, body} = await t.context.got.post(`dashboards/create-dashboard?token=${token}`,{ json :DuplDash});
   //Check response
   t.is(statusCode, 409); //Verify that the status code is 409 Conflict
   t.is(body.message, 'A dashboard with that name already exists.'); //Verify that the response body contains the correct error message
 });
+
 
   test('POST /delete-dashboard returns correct response when selected dashboard is not found ', async (t) => {
     // Set up the test by creating a new user token
