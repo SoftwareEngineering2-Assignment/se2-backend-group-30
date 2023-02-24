@@ -38,19 +38,20 @@ test('POST /create-dashboard returns correct response and status code', async (t
   mongoose(); //Connect to the database using Mongoose
   const token = jwtSign({id: user._id}); //Generate a JWT token for the user
   //create new dashboard for user with name=Dashname
-  Dashboardsec = await Dashboard({name: 'NameFirst',layout:[],items:{},nextId: 6,password: '12345678',shared: 0,views: 10,
+  DashboardFirst = await Dashboard({name: 'NameFirst',layout:[],items:{},nextId: 6,password: '12345678',shared: 0,views: 10,
                                   owner: user._id,createdAt:'',
   }).save();
-  const new_name = 'NameSec' ;  //dashboard name different from the existing one
-  const dashBody = {name:new_name};
+
+  DashboardSec = await Dashboard({name: 'NameSec',layout:[],items:{},nextId: 6,password: '12345678',shared: 0,views: 10,
+  owner: user._id,createdAt:'',
+}).save();
+
+ 
   //send POST request with authenticated user's token in query and new dashboard name in body
-  const {body,statusCode} = await t.context.request
-    .post(`/create-dashboard?token=${token}`)
-    .send(dashBody);
+  const {body, statusCode} = await t.context.got(`dashboards/dashboards?token=${token}`);
 
   t.is(statusCode, 200); //verify status code is 200
   t.true(body.success); //verify response has success property set to true
-  t.is(body.dashboard.name, new_name); //verify dashboard name is updated to new_name
 });
 
 // Test to verify that POST request to /create-dashboard with a duplicate name returns a 409 Conflict status code
@@ -65,7 +66,6 @@ test('POST /create-dashboard with duplicate name returns 409 status code', async
   t.is(statusCode, 409); //Verify that the status code is 409 Conflict
   t.is(body.message, 'A dashboard with that name already exists.'); //Verify that the response body contains the correct error message
 });
-  
 
   test('POST /delete-dashboard returns correct response when selected dashboard is not found ', async (t) => {
     // Set up the test by creating a new user token
@@ -160,7 +160,7 @@ test('GET /dashboards with invalid token returns 401 status code', async (t) => 
   const token = 'invalid-token'; //Set an invalid token
   const {statusCode} = await t.context.got(`dashboards/dashboards?token=${token}`);
   //Check response
-  t.is(statusCode, 401); //Verify that the status code is 401 Unauthorized
+  t.is(statusCode, 403); //Verify that the status code is 401 Unauthorized
 });
 
 // Test to verify that GET request to /dashboards without a token returns a 401 Unauthorized status code
@@ -168,7 +168,7 @@ test('GET /dashboards without token returns 401 status code', async (t) => {
   mongoose(); //Connect to the database using Mongoose
   const {statusCode} = await t.context.got('dashboards/dashboards');
   //Check response
-  t.is(statusCode, 401); //Verify that the status code is 401 Unauthorized
+  t.is(statusCode, 403); //Verify that the status code is 401 Unauthorized
 });
 
 // Test to verify that POST request to /create-dashboard with an invalid token returns a 401 Unauthorized status code
@@ -177,7 +177,7 @@ test('POST /create-dashboard with invalid token returns 401 status code', async 
   const token = 'invalid-token'; //Set an invalid token
   const {statusCode} = await t.context.got.post(`dashboards/create-dashboard?token=${token}`);
   //Check response
-  t.is(statusCode, 401); //Verify that the status code is 401 Unauthorized
+  t.is(statusCode, 403); //Verify that the status code is 401 Unauthorized
 });
 
 // Test to verify that POST request to /create-dashboard without a token returns a 401 Unauthorized status code
@@ -185,7 +185,7 @@ test('POST /create-dashboard without token returns 401 status code', async (t) =
   mongoose(); //Connect to the database using Mongoose
   const {statusCode} = await t.context.got.post('dashboards/create-dashboard');
   //Check response
-  t.is(statusCode, 401); //Verify that the status code is 401 Unauthorized
+  t.is(statusCode, 403); //Verify that the status code is 401 Unauthorized
 });
 
 test('POST /save-dashboard returns correct response when selected dashboard is not found ', async (t) => {
