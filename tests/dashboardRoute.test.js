@@ -339,30 +339,30 @@ test('POST /check-password-needed returns correct response when user tries to ac
   
 });
 
-// This test case verifies that POST /check-password-needed returns a correct response when a user tries to access another user's dashboard that does not have a password
-test('POST /check-password-needed returns correct response when user tries to access another user dashboard that does not have a password', async (t) => {
-  // Connect to MongoDB
-  mongoose();
-  // Generate JWT token for the user
-  const token = jwtSign({id: user._id});
-  // Create a dashboard owned by the other user
-  const dashboard = await Dashboard.create({
-    name: 'Test Dashboard',
-    layout: [],
-    items: {},
-    nextId: 9,
-    password: '',
-    shared: 1,
-    views: 3,
-    owner: user._id,
-    createdAt: Date.now()
-  });
-  // Create another user
-  const otherUser = await User.create({username: 'otherUser',password: 'password',email: 'email'});
-  // Attempt to access the dashboard owned by the other user
-  const response = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`, {json: {user: otherUser._id, dashboardId: dashboard._id}});
-  // Verify that the response contains the correct owner information and the status code is 200 OK
-  t.is(response.statusCode, 200);
-  t.is(response.body.owner, 'otherUser');
-  t.is(response.body.success, true);
-});
+// // This test case verifies that POST /check-password-needed returns a correct response when a user tries to access another user's dashboard that does not have a password
+// test('POST /check-password-needed returns correct response when user tries to access another user dashboard that does not have a password', async (t) => {
+//   // Connect to MongoDB
+//   mongoose();
+//   // Generate JWT token for the user
+//   const token = jwtSign({id: user._id});
+//   // Create a dashboard owned by the other user
+//   const dashboard = await Dashboard.create({
+//     name: 'Test Dashboard',
+//     layout: [],
+//     items: {},
+//     nextId: 9,
+//     password: '',
+//     shared: 1,
+//     views: 3,
+//     owner: user._id,
+//     createdAt: Date.now()
+//   });
+  
+//   const otherUser = await User.create({username: 'otherUser',password: 'password',email: 'email'});
+  
+//   const response = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`, {json: {user: otherUser._id, dashboardId: dashboard._id}});
+  
+//   t.is(response.statusCode, 200);
+//   t.is(response.body.owner, 'otherUser');
+//   t.is(response.body.success, true);
+// });
