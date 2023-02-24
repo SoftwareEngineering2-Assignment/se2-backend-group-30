@@ -272,7 +272,7 @@ test('POST /check-password-needed returns correct response if dashboard does not
   const falseid = '67ab17187c66d60ad82cf6cc'; //wrond dashboard in 
   
   const Dashb = {user:user._id, dashboardId:falseid}; 
-  const {body, statusCode}} = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`,{json:Dashb});
+  const {body, statusCode} = await t.context.got.post(`dashboardsPassword/check-password-needed?token=${token}`,{json:Dashb});
   
   t.is(statusCode, 409);
   t.is(body.message, 'The specified dashboard has not been found.');
