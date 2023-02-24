@@ -127,7 +127,7 @@ test('POST /create-source with invalid data returns 404 status code', async (t) 
   
     const nonExistentId = '5f5b6b0a8f82c304a85d6dd7';
     
-    const {body, statusCode} = await t.context.got(`sources/${nonExistentId}?token=${token}`);
+    const {body, statusCode} = await t.context.got(`sources/sources?token=${token}`);
   
     t.is(statusCode, 404);
     t.is(body.message, `Source with id ${nonExistentId} does not exist`);
