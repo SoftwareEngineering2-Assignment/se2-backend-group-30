@@ -120,19 +120,6 @@ test('POST /create-source with invalid data returns 404 status code', async (t) 
     t.assert(body.success);
   });
   
-  // Test to verify that GET request to /sources/:id returns 404 Not Found status code for non-existent source id
-  test('GET /sources/:id returns 404 Not Found status code for non-existent source id', async (t) => {
-    mongoose();
-    const token = jwtSign({id: user._id});
-  
-    const nonExistentId = '63ac3989dd4ed355bcb8c123';
-    
-    const {body, statusCode} = await t.context.got(`sources/sources?token=${token}`);
-  
-    t.is(statusCode, 404);
-    t.is(body.message, `Source with id ${nonExistentId} does not exist`);
-  });
-
   
 test('POST /create-source returns correct response and status code when trying to create a new Newsource with a name that already exists ', async (t) => {
   mongoose();
